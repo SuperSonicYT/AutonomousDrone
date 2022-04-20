@@ -39,6 +39,7 @@ public:
         AUTOROTATE =   26,  // Autonomous autorotation
         AUTO_RTL =     27,  // Auto RTL, this is not a true mode, AUTO will report as this mode if entered to perform a DO_LAND_START Landing sequence
         TURTLE =       28,  // Flip over after crash
+        AUTOCIRCLE=    29,  //Autonomous circular flight path
     };
 
     // constructor
@@ -1444,6 +1445,53 @@ protected:
 
 private:
 
+};
+
+#if FRAME_CONFIG == HELI_FRAME
+class ModeStabilize_Heli : public ModeStabilize {
+
+public:
+    // inherit constructor
+    using ModeStabilize::Mode;
+
+    bool init(bool ignore_checks) override;
+    void run() override;
+
+protected:
+
+private:
+
+};
+#endif
+
+class ModeAutoCircle : public Mode {
+
+public:
+    // inherit constructor
+    using Mode::Mode;
+    Number mode_number() const override { return Number::AUTOCIRCLE; }
+
+    bool init(bool ignore_checks) override;
+    void run() override;
+
+    bool requires_GPS() const override { return true; }
+    bool has_manual_throttle() const override { return false; }
+    bool allows_arming(AP_Arming::Method method) const override { return false; };
+    bool is_autopilot() const override { return true; }
+
+protected:
+
+    const char *name() const override { return "AUTOCIRCLE"; }
+    const char *name4() const override { return "ACIR"; }
+
+    uint32_t wp_distance() const override;
+    int32_t wp_bearing() const override;
+
+private:
+
+    // Circle
+    bool pilot_yaw_override = false; // true if pilot is overriding yaw
+    bool speed_changing = false;     // true when the roll stick is being held to facilitate stopping at 0 rate
 };
 
 #if FRAME_CONFIG == HELI_FRAME
