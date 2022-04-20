@@ -192,6 +192,7 @@ public:
     friend class Mode;
     friend class ModeAcro;
     friend class ModeAcro_Heli;
+    friend class ModeAutoCircle;
     friend class ModeAltHold;
     friend class ModeAuto;
     friend class ModeAutoTune;
@@ -461,6 +462,7 @@ private:
 #if MODE_CIRCLE_ENABLED == ENABLED
     AC_Circle *circle_nav;
 #endif
+
 
     // System Timers
     // --------------
@@ -920,6 +922,11 @@ private:
 #endif
 #endif
     ModeAltHold mode_althold;
+
+#if MODE_AUTOCIRCLE_ENABLED == ENABLED
+    ModeCircle mode_autocircle;
+#endif
+    
 #if MODE_AUTO_ENABLED == ENABLED
     ModeAuto mode_auto;
 #endif
